@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import { prisma } from '../lib/prisma.js'
 import { signToken } from '../lib/jwt.js'
 import { loginSchema } from '../schemas/auth.js'
+import { requireAuth } from '../middleware/requireAuth.js'
 
 const router = Router()
 
@@ -46,6 +47,10 @@ router.post('/login', async (req: Request, res: Response) => {
       workEndHour: user.workEndHour,
     },
   })
+})
+
+router.get('/me', requireAuth, (req: Request, res: Response) => {
+  res.json({ user: req.user })
 })
 
 export default router
