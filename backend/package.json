@@ -19,6 +19,9 @@
     "luxon": "^3.5.0",
     "zod": "^3.24.1"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "@types/bcrypt": "^5.0.2",
