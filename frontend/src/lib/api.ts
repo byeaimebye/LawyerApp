@@ -12,6 +12,29 @@ api.interceptors.request.use((config) => {
   return config
 })
 
+export interface Appointment {
+  id: string
+  lawyerId: string
+  clientName: string
+  clientEmail: string
+  clientTimezone: string
+  type: 'IN_PERSON' | 'VIDEO' | 'PHONE'
+  startAt: string
+  endAt: string
+  durationMinutes: number
+  status: 'SCHEDULED' | 'CANCELLED'
+  locationOrLink: string | null
+  notes: string | null
+  createdAt: string
+}
+
+export async function getAppointments(from: string, to: string): Promise<Appointment[]> {
+  const { data } = await api.get<Appointment[]>('/appointments', {
+    params: { from, to },
+  })
+  return data
+}
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
