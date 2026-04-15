@@ -60,14 +60,20 @@ createdAt       DateTime
 INDEX (lawyerId, startAt, endAt)
 ]
 
-## Estrategia TZ
-[pegás la sección de TZ del plan]
+## Estrategia de zonas horarias (resumen — detalle en docs/timezone-strategy.md)
+- Todo se guarda en UTC en DB.
+- Conversión ocurre en los bordes (input e UI) usando luxon.
+- User tiene su timezone (IANA).
+- Cada Appointment guarda la TZ del cliente (para citas VIDEO/PHONE).
+- UI muestra doble horario (abogado + cliente) en citas remotas.
+- Validación de solapamiento se hace en UTC.
 
 ## Convenciones
 - Commits: conventional commits (feat:, fix:, chore:, docs:)
 - Branches: feat/TKT-XX-descripcion
 - PRs: referencian el ticket en el título
 - No mergear sin CI verde
+- Antes de realizar el commit dame un step de pasos para testear los cambios
 
 ## Lo que NO hacemos en este challenge
 - Entra ID / OAuth (queda como next step en README)
