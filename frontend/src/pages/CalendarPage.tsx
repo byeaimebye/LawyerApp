@@ -4,6 +4,7 @@ import { DateTime } from 'luxon'
 import { AppNavbar } from '../components/AppNavbar'
 import { Calendar } from '../components/Calendar'
 import { DayPanel } from '../components/DayPanel'
+import { CreateAppointmentModal } from '../components/CreateAppointmentModal'
 import { FreeSlot } from '../utils/slots'
 import { Appointment } from '../lib/api'
 import { useAuth } from '../contexts/AuthContext'
@@ -15,10 +16,12 @@ export function CalendarPage() {
   const [selectedDay, setSelectedDay] = useState<DateTime>(() =>
     DateTime.now().setZone(timezone).startOf('day'),
   )
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedSlot, setSelectedSlot] = useState<FreeSlot | null>(null)
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function handleSlotClick(_slot: FreeSlot) {
-    // TKT-10: open create appointment modal
+  function handleSlotClick(slot: FreeSlot) {
+    setSelectedSlot(slot)
+    setModalOpen(true)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -43,6 +46,12 @@ export function CalendarPage() {
           </Grid>
         </Grid>
       </Box>
+
+      <CreateAppointmentModal
+        open={modalOpen}
+        slot={selectedSlot}
+        onClose={() => setModalOpen(false)}
+      />
     </>
   )
 }

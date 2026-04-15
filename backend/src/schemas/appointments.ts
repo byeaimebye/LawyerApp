@@ -13,8 +13,8 @@ export type ListAppointmentsInput = z.infer<typeof listAppointmentsSchema>
 
 export const createAppointmentSchema = z.object({
   startAt: z.string().datetime({ message: 'startAt must be a valid ISO 8601 UTC datetime' }),
-  durationMinutes: z.union([z.literal(30), z.literal(60), z.literal(120)], {
-    errorMap: () => ({ message: 'durationMinutes must be 30, 60, or 120' }),
+  durationMinutes: z.literal(45, {
+    errorMap: () => ({ message: 'durationMinutes must be 45' }),
   }),
   type: z.enum(['IN_PERSON', 'VIDEO', 'PHONE'], {
     errorMap: () => ({ message: 'type must be IN_PERSON, VIDEO, or PHONE' }),

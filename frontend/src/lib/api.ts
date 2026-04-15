@@ -35,6 +35,22 @@ export async function getAppointments(from: string, to: string): Promise<Appoint
   return data
 }
 
+export interface CreateAppointmentPayload {
+  startAt: string
+  durationMinutes: 45
+  type: 'IN_PERSON' | 'VIDEO' | 'PHONE'
+  clientName: string
+  clientEmail: string
+  clientTimezone: string
+  locationOrLink?: string
+  notes?: string
+}
+
+export async function createAppointment(payload: CreateAppointmentPayload): Promise<Appointment> {
+  const { data } = await api.post<Appointment>('/appointments', payload)
+  return data
+}
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {

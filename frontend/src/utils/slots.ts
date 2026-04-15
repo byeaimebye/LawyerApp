@@ -1,5 +1,7 @@
-import { DateTime, Interval } from 'luxon'
+import { DateTime } from 'luxon'
 import { Appointment } from '../lib/api'
+
+export const APPOINTMENT_DURATION_MINUTES = 45
 
 export interface FreeSlot {
   start: DateTime
@@ -13,15 +15,18 @@ export function computeFreeSlots(
   workEndHour: number,
   appointments: Appointment[],
 ): FreeSlot[] {
-  const workStart = day.setZone(timezone).startOf('day').set({ hour: workStartHour })
-  const workEnd = day.setZone(timezone).startOf('day').set({ hour: workEndHour })
+  const dayInTz = day.setZone(timezone).startOf('day')
+  const workStart = dayInTz.set({ hour: workStartHour, minute: 0, second: 0, millisecond: 0 })
+  const workEnd = dayInTz.set({ hour: workEndHour, minute: 0, second: 0, millisecond: 0 })
+  const now = DateTime.now()
 
-  // Build 30-min candidate slots within working hours
+  // Build 45-min candidate slots within working hours, skipping slots that
+  // have already started (the backend also rejects past startAt values)
   const candidates: FreeSlot[] = []
   let cursor = workStart
   while (cursor < workEnd) {
-    const slotEnd = cursor.plus({ minutes: 30 })
-    if (slotEnd <= workEnd) {
+    const slotEnd = cursor.plus({ minutes: APPOINTMENT_DURATION_MINUTES })
+    if (slotEnd <= workEnd && cursor > now) {
       candidates.push({ start: cursor, end: slotEnd })
     }
     cursor = slotEnd
@@ -35,12 +40,10 @@ export function computeFreeSlots(
       end: DateTime.fromISO(a.endAt).setZone(timezone),
     }))
 
-  // A candidate slot is free if it doesn't overlap any occupied interval
+  // A slot is free only if it has zero overlap with every occupied interval.
+  // Using direct ms comparison avoids any edge-case behaviour from Interval.overlaps().
+  // Two ranges overlap when: start < other.end AND end > other.start
   return candidates.filter((slot) =>
-    occupied.every((occ) => {
-      const slotInterval = Interval.fromDateTimes(slot.start, slot.end)
-      const occInterval = Interval.fromDateTimes(occ.start, occ.end)
-      return !slotInterval.overlaps(occInterval)
-    }),
+    occupied.every((occ) => slot.start >= occ.end || slot.end <= occ.start),
   )
 }

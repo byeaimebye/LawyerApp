@@ -14,19 +14,20 @@ function serviceError(status: number, error: string, code: string): AppointmentS
   return { status, error, code }
 }
 
+const DURATION_MINUTES = 45
+
 export async function createAppointment({
   lawyerId,
   startAt: startAtStr,
-  durationMinutes,
   type,
   clientName,
   clientEmail,
   clientTimezone,
   locationOrLink,
   notes,
-}: CreateAppointmentInput & { lawyerId: string }) {
+}: Omit<CreateAppointmentInput, 'durationMinutes'> & { lawyerId: string }) {
   const startAt = new Date(startAtStr)
-  const endAt = new Date(startAt.getTime() + durationMinutes * 60 * 1000)
+  const endAt = new Date(startAt.getTime() + DURATION_MINUTES * 60 * 1000)
 
   // 1. Not in the past
   if (startAt <= new Date()) {
@@ -66,7 +67,7 @@ export async function createAppointment({
       type: type as AppointmentType,
       startAt,
       endAt,
-      durationMinutes,
+      durationMinutes: DURATION_MINUTES,
       locationOrLink,
       notes,
     },

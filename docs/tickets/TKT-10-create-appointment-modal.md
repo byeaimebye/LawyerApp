@@ -11,9 +11,12 @@ MUI, con preview en vivo del horario del cliente.
 
 ## Detalles técnicos
 - Modal MUI (Dialog) abierto al clickear un slot libre (viene con la hora pre-seleccionada).
+- **Duración fija: 45 minutos** — no configurable por el usuario.
+  - Los slots se generan cada 45 min dentro del horario laboral.
+  - El backend rechaza cualquier `durationMinutes` distinto de 45.
+  - La constante `APPOINTMENT_DURATION_MINUTES = 45` vive en `frontend/src/utils/slots.ts` y es importada por el modal.
 - Campos:
-  - **Hora de inicio** (no editable si viene del slot, o editable con TimePicker).
-  - **Duración** (Select: 30 / 60 / 120 minutos).
+  - **Hora de inicio** (no editable — fija desde el slot seleccionado).
   - **Tipo** (ToggleButtonGroup: Presencial / Videollamada / Telefónica).
   - **Nombre del cliente** (TextField).
   - **Email del cliente** (TextField, validado).
@@ -21,9 +24,9 @@ MUI, con preview en vivo del horario del cliente.
   - **Ubicación / link** (TextField condicional: visible solo para IN_PERSON o VIDEO).
   - **Notas** (TextField multiline, opcional).
 - **Preview en vivo** mostrando:
-  - "Tu horario ({lawyerTZ}): HH:mm"
-  - "Horario del cliente ({clientTZ}): HH:mm" (solo para VIDEO/PHONE)
-- Submit llama `POST /appointments` con el ISO UTC de `startAt`.
+  - "Tu horario ({lawyerTZ}): HH:mm – HH:mm · 45 min"
+  - "Horario del cliente ({clientTZ}): HH:mm – HH:mm" (solo para VIDEO/PHONE)
+- Submit llama `POST /appointments` con el ISO UTC de `startAt` y `durationMinutes: 45`.
 - Manejar errores de backend (409 solapamiento, 422 horario, etc.) con Snackbar.
 - Al éxito: cerrar modal + invalidar query de citas (react-query) para refrescar.
 
