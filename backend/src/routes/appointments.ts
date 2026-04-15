@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { requireAuth } from '../middleware/requireAuth.js'
-import { listAppointmentsSchema } from '../schemas/appointments.js'
-import { listAppointments } from '../services/appointmentsService.js'
+import { listAppointmentsSchema, createAppointmentSchema } from '../schemas/appointments.js'
+import { listAppointments, createAppointment } from '../services/appointmentsService.js'
 
 const router = Router()
 
@@ -23,6 +23,32 @@ router.get('/', async (req: Request, res: Response) => {
   })
 
   res.json(appointments)
+})
+
+router.post('/', async (req: Request, res: Response) => {
+  const parsed = createAppointmentSchema.safeParse(req.body)
+  if (!parsed.success) {
+    res.status(400).json({
+      error: parsed.error.errors[0]?.message ?? 'Invalid request body',
+      code: 'VALIDATION_ERROR',
+    })
+    return
+  }
+
+  try {
+    const appointment = await createAppointment({
+      lawyerId: req.user!.userId,
+      ...parsed.data,
+    })
+    res.status(201).json(appointment)
+  } catch (err: unknown) {
+    const e = err as { status?: number; error?: string; code?: string }
+    if (e.status) {
+      res.status(e.status).json({ error: e.error, code: e.code })
+    } else {
+      res.status(500).json({ error: 'Internal server error' })
+    }
+  }
 })
 
 export default router
