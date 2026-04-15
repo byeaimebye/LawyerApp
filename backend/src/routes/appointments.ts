@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express'
 import { requireAuth } from '../middleware/requireAuth.js'
 import { listAppointmentsSchema, createAppointmentSchema } from '../schemas/appointments.js'
-import { listAppointments, createAppointment } from '../services/appointmentsService.js'
+import { listAppointments, createAppointment, cancelAppointment } from '../services/appointmentsService.js'
 
 const router = Router()
 
@@ -41,6 +41,23 @@ router.post('/', async (req: Request, res: Response) => {
       ...parsed.data,
     })
     res.status(201).json(appointment)
+  } catch (err: unknown) {
+    const e = err as { status?: number; error?: string; code?: string }
+    if (e.status) {
+      res.status(e.status).json({ error: e.error, code: e.code })
+    } else {
+      res.status(500).json({ error: 'Internal server error' })
+    }
+  }
+})
+
+router.patch('/:id/cancel', async (req: Request, res: Response) => {
+  try {
+    const appointment = await cancelAppointment({
+      appointmentId: req.params.id,
+      lawyerId: req.user!.userId,
+    })
+    res.json(appointment)
   } catch (err: unknown) {
     const e = err as { status?: number; error?: string; code?: string }
     if (e.status) {

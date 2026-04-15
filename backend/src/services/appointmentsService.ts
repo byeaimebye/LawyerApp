@@ -74,6 +74,39 @@ export async function createAppointment({
   })
 }
 
+export async function cancelAppointment({
+  appointmentId,
+  lawyerId,
+}: {
+  appointmentId: string
+  lawyerId: string
+}) {
+  const appointment = await prisma.appointment.findUnique({
+    where: { id: appointmentId },
+  })
+
+  if (!appointment) {
+    throw serviceError(404, 'Appointment not found', 'NOT_FOUND')
+  }
+
+  if (appointment.lawyerId !== lawyerId) {
+    throw serviceError(403, 'Forbidden', 'FORBIDDEN')
+  }
+
+  if (appointment.status === AppointmentStatus.CANCELLED) {
+    throw serviceError(409, 'Appointment is already cancelled', 'ALREADY_CANCELLED')
+  }
+
+  if (appointment.startAt <= new Date()) {
+    throw serviceError(400, 'Cannot cancel a past appointment', 'PAST_DATE')
+  }
+
+  return prisma.appointment.update({
+    where: { id: appointmentId },
+    data: { status: AppointmentStatus.CANCELLED },
+  })
+}
+
 export async function listAppointments({
   lawyerId,
   from,

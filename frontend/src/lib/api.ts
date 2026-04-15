@@ -51,6 +51,11 @@ export async function createAppointment(payload: CreateAppointmentPayload): Prom
   return data
 }
 
+export async function cancelAppointment(id: string): Promise<Appointment> {
+  const { data } = await api.patch<Appointment>(`/appointments/${id}/cancel`)
+  return data
+}
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
