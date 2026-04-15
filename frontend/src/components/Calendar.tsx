@@ -7,15 +7,15 @@ import { useAppointments } from '../hooks/useAppointments'
 import { useAuth } from '../contexts/AuthContext'
 
 interface CalendarProps {
+  selectedDay: DateTime
   onDaySelect: (day: DateTime) => void
 }
 
-export function Calendar({ onDaySelect }: CalendarProps) {
+export function Calendar({ selectedDay, onDaySelect }: CalendarProps) {
   const { user } = useAuth()
   const timezone = user?.timezone ?? 'UTC'
 
   const [currentMonth, setCurrentMonth] = useState(() => DateTime.now().setZone(timezone))
-  const [selectedDay, setSelectedDay] = useState<DateTime | null>(null)
 
   const { data: appointments = [] } = useAppointments(currentMonth)
 
@@ -36,14 +36,19 @@ export function Calendar({ onDaySelect }: CalendarProps) {
   const handleDaySelect = useCallback(
     (day: DateTime | null) => {
       if (!day) return
-      setSelectedDay(day)
       onDaySelect(day)
     },
     [onDaySelect],
   )
 
   function renderDay(props: PickersDayProps<DateTime>) {
-    return <DayWithBadge {...props} daysWithAppointments={daysWithAppointments} />
+    return (
+      <DayWithBadge
+        {...props}
+        daysWithAppointments={daysWithAppointments}
+        timezone={timezone}
+      />
+    )
   }
 
   return (
