@@ -5,6 +5,7 @@ import { AppNavbar } from '../components/AppNavbar'
 import { Calendar } from '../components/Calendar'
 import { DayPanel } from '../components/DayPanel'
 import { CreateAppointmentModal } from '../components/CreateAppointmentModal'
+import { AppointmentDetailModal } from '../components/AppointmentDetailModal'
 import { FreeSlot } from '../utils/slots'
 import { Appointment } from '../lib/api'
 import { useAuth } from '../contexts/AuthContext'
@@ -18,15 +19,15 @@ export function CalendarPage() {
   )
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedSlot, setSelectedSlot] = useState<FreeSlot | null>(null)
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
 
   function handleSlotClick(slot: FreeSlot) {
     setSelectedSlot(slot)
     setModalOpen(true)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  function handleAppointmentClick(_appointment: Appointment) {
-    // TKT-12: open appointment detail
+  function handleAppointmentClick(appointment: Appointment) {
+    setSelectedAppointment(appointment)
   }
 
   return (
@@ -51,6 +52,12 @@ export function CalendarPage() {
         open={modalOpen}
         slot={selectedSlot}
         onClose={() => setModalOpen(false)}
+      />
+
+      <AppointmentDetailModal
+        appointment={selectedAppointment}
+        lawyerTimezone={timezone}
+        onClose={() => setSelectedAppointment(null)}
       />
     </>
   )
