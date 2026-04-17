@@ -3,20 +3,23 @@
 ## Entidades
 
 ### User
-Representa a un abogado. En este challenge no hay otros roles además de
-LAWYER, pero el enum queda para extensibilidad.
+Representa a un abogado o a un administrador del sistema.
 
-| Campo          | Tipo          | Notas                                        |
-|----------------|---------------|----------------------------------------------|
-| id             | UUID (PK)     |                                              |
-| email          | String UNIQUE |                                              |
-| passwordHash   | String        | bcrypt                                       |
-| name           | String        |                                              |
-| role           | Enum          | `LAWYER` (único valor por ahora)             |
-| timezone       | String        | IANA, ej. `America/Argentina/Buenos_Aires`   |
-| workStartHour  | Int           | 0–23, ej. 8                                  |
-| workEndHour    | Int           | 0–23, ej. 18                                 |
-| createdAt      | DateTime      |                                              |
+| Campo          | Tipo          | Notas                                                    |
+|----------------|---------------|----------------------------------------------------------|
+| id             | UUID (PK)     |                                                          |
+| email          | String UNIQUE |                                                          |
+| passwordHash   | String        | bcrypt                                                   |
+| name           | String        |                                                          |
+| role           | Enum          | `LAWYER` \| `SUPERADMIN`                                 |
+| timezone       | String        | IANA, ej. `America/Argentina/Buenos_Aires`               |
+| workStartHour  | Int           | 0–23, ej. 8 (SUPERADMIN: 0)                              |
+| workEndHour    | Int           | 0–23, ej. 18 (SUPERADMIN: 24)                            |
+| createdAt      | DateTime      |                                                          |
+
+**Roles:**
+- `LAWYER`: abogado. Gestiona sus propias citas. El calendario opera en su timezone.
+- `SUPERADMIN`: administrador. Puede ver y gestionar citas de cualquier abogado. Requiere seleccionar un abogado antes de operar; siempre opera en la timezone del abogado activo, nunca en la propia.
 
 ### Appointment
 Representa una cita. El cliente NO es un usuario del sistema — se
@@ -76,15 +79,15 @@ Si devuelve un registro → conflicto → 409.
 
 ```prisma
 model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
+  id             String        @id @default(uuid())
+  email          String        @unique
   passwordHash   String
   name           String
-  role           Role     @default(LAWYER)
+  role           Role          @default(LAWYER)
   timezone       String
-  workStartHour  Int      @default(8)
-  workEndHour    Int      @default(18)
-  createdAt      DateTime @default(now())
+  workStartHour  Int           @default(8)
+  workEndHour    Int           @default(18)
+  createdAt      DateTime      @default(now())
   appointments   Appointment[]
 }
 
@@ -107,7 +110,7 @@ model Appointment {
   @@index([lawyerId, startAt, endAt])
 }
 
-enum Role { LAWYER }
-enum AppointmentType { IN_PERSON VIDEO PHONE }
+enum Role             { LAWYER SUPERADMIN }
+enum AppointmentType  { IN_PERSON VIDEO PHONE }
 enum AppointmentStatus { SCHEDULED CANCELLED }
 ```
