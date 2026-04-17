@@ -1,7 +1,7 @@
 # TKT-08 · Vista de día seleccionado
 
 **Épica:** 2 — Calendario
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-07
 **Estimación:** M
 

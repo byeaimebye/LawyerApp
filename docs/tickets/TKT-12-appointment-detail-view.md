@@ -1,7 +1,7 @@
 # TKT-12 · Vista de detalle de cita
 
 **Épica:** 3 — Gestión de citas
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-08, TKT-11
 **Estimación:** M
 

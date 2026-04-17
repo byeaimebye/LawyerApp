@@ -1,7 +1,7 @@
 # TKT-16 · CI con GitHub Actions
 
 **Épica:** 5 — CI/CD y documentación
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-01
 **Estimación:** S
 

@@ -1,7 +1,7 @@
 # TKT-14 · Deploy del backend en Render
 
 **Épica:** 4 — Deploy
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-13
 **Estimación:** M
 

@@ -1,7 +1,7 @@
 # TKT-09 · Endpoint de creación de cita
 
 **Épica:** 3 — Gestión de citas
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-06
 **Estimación:** M
 

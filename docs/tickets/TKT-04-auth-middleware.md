@@ -1,7 +1,7 @@
 # TKT-04 · Middleware de autenticación
 
 **Épica:** 1 — Autenticación
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-03
 **Estimación:** S
 

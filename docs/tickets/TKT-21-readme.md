@@ -1,8 +1,8 @@
-# TKT-17 · README final
+# TKT-21 · README final
 
 **Épica:** 5 — CI/CD y documentación
 **Estado:** pending
-**Depende de:** TKT-15, TKT-16
+**Depende de:** TKT-15, TKT-16, TKT-20
 **Estimación:** M
 
 ## Objetivo

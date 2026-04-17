@@ -1,7 +1,7 @@
 # TKT-06 · Endpoint listado de citas
 
 **Épica:** 2 — Calendario
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-04
 **Estimación:** S
 

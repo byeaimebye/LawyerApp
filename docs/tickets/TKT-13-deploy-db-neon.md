@@ -1,7 +1,7 @@
 # TKT-13 · Deploy de la DB en Neon
 
 **Épica:** 4 — Deploy
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-02
 **Estimación:** S
 

@@ -1,7 +1,7 @@
 # TKT-02 · Schema de DB + seed
 
 **Épica:** 0 — Setup
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-01
 **Estimación:** M
 

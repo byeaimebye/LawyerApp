@@ -1,7 +1,7 @@
 # TKT-05 · Pantalla de login (frontend)
 
 **Épica:** 1 — Autenticación
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-03
 **Estimación:** M
 

@@ -1,7 +1,7 @@
 # TKT-07 · Calendario MUI
 
 **Épica:** 2 — Calendario
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-05, TKT-06
 **Estimación:** M
 

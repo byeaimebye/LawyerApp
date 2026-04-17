@@ -1,7 +1,7 @@
 # TKT-15 · Deploy del frontend en Vercel
 
 **Épica:** 4 — Deploy
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-14
 **Estimación:** S
 

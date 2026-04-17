@@ -1,7 +1,7 @@
 # TKT-01 · Bootstrap del repositorio
 
 **Épica:** 0 — Setup
-**Estado:** pending
+**Estado:** done
 **Depende de:** ninguno
 **Estimación:** S
 

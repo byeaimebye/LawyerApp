@@ -1,7 +1,7 @@
 # TKT-10 · Modal de creación de cita
 
 **Épica:** 3 — Gestión de citas
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-08, TKT-09
 **Estimación:** L
 

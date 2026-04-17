@@ -1,7 +1,7 @@
 # TKT-11 · Cancelar cita
 
 **Épica:** 3 — Gestión de citas
-**Estado:** pending
+**Estado:** done
 **Depende de:** TKT-09
 **Estimación:** S
 
