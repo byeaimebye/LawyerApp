@@ -7,22 +7,30 @@ import { AppointmentCard } from './AppointmentCard'
 import { FreeSlotButton } from './FreeSlotButton'
 import { Appointment } from '../lib/api'
 
+interface LawyerOverride {
+  id: string
+  timezone: string
+  workStartHour: number
+  workEndHour: number
+}
+
 interface DayPanelProps {
   day: DateTime
   onSlotClick: (slot: FreeSlot) => void
   onAppointmentClick: (appointment: Appointment) => void
+  lawyerOverride?: LawyerOverride
 }
 
-export function DayPanel({ day, onSlotClick, onAppointmentClick }: DayPanelProps) {
+export function DayPanel({ day, onSlotClick, onAppointmentClick, lawyerOverride }: DayPanelProps) {
   const { user } = useAuth()
-  const timezone = user?.timezone ?? 'UTC'
-  const workStartHour = user?.workStartHour ?? 8
-  const workEndHour = user?.workEndHour ?? 18
+  const timezone = lawyerOverride?.timezone ?? user?.timezone ?? 'UTC'
+  const workStartHour = lawyerOverride?.workStartHour ?? user?.workStartHour ?? 8
+  const workEndHour = lawyerOverride?.workEndHour ?? user?.workEndHour ?? 18
 
   const today = DateTime.now().setZone(timezone).startOf('day')
   const isPast = day.startOf('day') < today
 
-  const { data: appointments = [], isLoading } = useAppointments(day)
+  const { data: appointments = [], isLoading } = useAppointments(day, lawyerOverride?.id)
 
   const dayAppointments = appointments
     .filter((a) => {

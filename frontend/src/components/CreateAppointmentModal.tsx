@@ -41,6 +41,7 @@ interface CreateAppointmentModalProps {
   open: boolean
   slot: FreeSlot | null
   onClose: () => void
+  lawyerId?: string
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -73,7 +74,7 @@ const EMPTY_FORM: FormState = {
   notes: '',
 }
 
-export function CreateAppointmentModal({ open, slot, onClose }: CreateAppointmentModalProps) {
+export function CreateAppointmentModal({ open, slot, onClose, lawyerId }: CreateAppointmentModalProps) {
   const { user } = useAuth()
   const lawyerTimezone = user?.timezone ?? 'UTC'
 
@@ -110,6 +111,7 @@ export function CreateAppointmentModal({ open, slot, onClose }: CreateAppointmen
 
     try {
       await mutation.mutateAsync({
+        ...(lawyerId ? { lawyerId } : {}),
         startAt: slot.start.toUTC().toISO()!,
         durationMinutes: 45,
         type: form.type,

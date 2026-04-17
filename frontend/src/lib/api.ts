@@ -28,14 +28,29 @@ export interface Appointment {
   createdAt: string
 }
 
-export async function getAppointments(from: string, to: string): Promise<Appointment[]> {
+export interface Lawyer {
+  id: string
+  name: string
+  email: string
+  timezone: string
+  workStartHour: number
+  workEndHour: number
+}
+
+export async function getLawyers(): Promise<Lawyer[]> {
+  const { data } = await api.get<Lawyer[]>('/lawyers')
+  return data
+}
+
+export async function getAppointments(from: string, to: string, lawyerId?: string): Promise<Appointment[]> {
   const { data } = await api.get<Appointment[]>('/appointments', {
-    params: { from, to },
+    params: { from, to, ...(lawyerId ? { lawyerId } : {}) },
   })
   return data
 }
 
 export interface CreateAppointmentPayload {
+  lawyerId?: string
   startAt: string
   durationMinutes: 45
   type: 'IN_PERSON' | 'VIDEO' | 'PHONE'
