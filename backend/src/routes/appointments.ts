@@ -14,9 +14,21 @@ router.get('/', async (req: Request, res: Response) => {
     return
   }
 
-  const { from, to, includeCancelled } = parsed.data
+  const { from, to, includeCancelled, lawyerId: queryLawyerId } = parsed.data
+
+  let lawyerId: string
+  if (req.user!.role === 'SUPERADMIN') {
+    if (!queryLawyerId) {
+      res.status(400).json({ error: 'lawyerId query param is required for SUPERADMIN', code: 'VALIDATION_ERROR' })
+      return
+    }
+    lawyerId = queryLawyerId
+  } else {
+    lawyerId = req.user!.userId
+  }
+
   const appointments = await listAppointments({
-    lawyerId: req.user!.userId,
+    lawyerId,
     from,
     to,
     includeCancelled,
@@ -35,9 +47,20 @@ router.post('/', async (req: Request, res: Response) => {
     return
   }
 
+  let lawyerId: string
+  if (req.user!.role === 'SUPERADMIN') {
+    if (!parsed.data.lawyerId) {
+      res.status(400).json({ error: 'lawyerId is required in body for SUPERADMIN', code: 'VALIDATION_ERROR' })
+      return
+    }
+    lawyerId = parsed.data.lawyerId
+  } else {
+    lawyerId = req.user!.userId
+  }
+
   try {
     const appointment = await createAppointment({
-      lawyerId: req.user!.userId,
+      lawyerId,
       ...parsed.data,
     })
     res.status(201).json(appointment)
@@ -56,6 +79,7 @@ router.patch('/:id/cancel', async (req: Request, res: Response) => {
     const appointment = await cancelAppointment({
       appointmentId: req.params.id,
       lawyerId: req.user!.userId,
+      isSuperAdmin: req.user!.role === 'SUPERADMIN',
     })
     res.json(appointment)
   } catch (err: unknown) {

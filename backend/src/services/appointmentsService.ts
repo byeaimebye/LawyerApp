@@ -77,9 +77,11 @@ export async function createAppointment({
 export async function cancelAppointment({
   appointmentId,
   lawyerId,
+  isSuperAdmin = false,
 }: {
   appointmentId: string
   lawyerId: string
+  isSuperAdmin?: boolean
 }) {
   const appointment = await prisma.appointment.findUnique({
     where: { id: appointmentId },
@@ -89,7 +91,7 @@ export async function cancelAppointment({
     throw serviceError(404, 'Appointment not found', 'NOT_FOUND')
   }
 
-  if (appointment.lawyerId !== lawyerId) {
+  if (!isSuperAdmin && appointment.lawyerId !== lawyerId) {
     throw serviceError(403, 'Forbidden', 'FORBIDDEN')
   }
 

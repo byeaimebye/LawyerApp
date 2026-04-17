@@ -7,11 +7,13 @@ export const listAppointmentsSchema = z.object({
     .enum(['true', 'false'])
     .optional()
     .transform((v) => v === 'true'),
+  lawyerId: z.string().uuid().optional(),
 })
 
 export type ListAppointmentsInput = z.infer<typeof listAppointmentsSchema>
 
 export const createAppointmentSchema = z.object({
+  lawyerId: z.string().uuid().optional(),
   startAt: z.string().datetime({ message: 'startAt must be a valid ISO 8601 UTC datetime' }),
   durationMinutes: z.literal(45, {
     errorMap: () => ({ message: 'durationMinutes must be 45' }),
