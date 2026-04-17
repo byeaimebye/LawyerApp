@@ -6,5 +6,6 @@ export default defineConfig({
     environment: 'node',
     testTimeout: 15000,
     fileParallelism: false, // sequential to avoid DB conflicts across test files
+    globalSetup: ['./src/__tests__/globalTeardown.ts'],
   },
 })

@@ -28,7 +28,9 @@ export function DayPanel({ day, onSlotClick, onAppointmentClick, lawyerOverride 
   const workEndHour = lawyerOverride?.workEndHour ?? user?.workEndHour ?? 18
 
   const today = DateTime.now().setZone(timezone).startOf('day')
-  const isPast = day.startOf('day') < today
+  // Normalize day to the active timezone before comparing — avoids false isPast
+  // when day carries a different zone (e.g. SUPERADMIN's UTC vs lawyer's BA timezone)
+  const isPast = day.setZone(timezone).startOf('day') < today
 
   const { data: appointments = [], isLoading } = useAppointments(day, lawyerOverride?.id)
 

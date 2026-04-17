@@ -32,13 +32,22 @@ export function CalendarPage() {
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null)
   const [selectedLawyer, setSelectedLawyer] = useState<Lawyer | null>(null)
 
-  const { data: lawyers = [], isLoading: lawyersLoading } = useLawyers()
+  const { data: lawyers = [], isLoading: lawyersLoading } = useLawyers(isSuperAdmin)
 
   useEffect(() => {
     if (isSuperAdmin && lawyers.length > 0 && selectedLawyer === null) {
       setSelectedLawyer(lawyers[0])
     }
   }, [isSuperAdmin, lawyers, selectedLawyer])
+
+  // When the active lawyer changes, reset selectedDay to TODAY in the lawyer's timezone.
+  // Rule: SUPERADMIN operates in the lawyer's timezone context, never their own.
+  // Without this, SUPERADMIN's UTC midnight ≠ lawyer's local midnight → day shift bug.
+  useEffect(() => {
+    if (isSuperAdmin && selectedLawyer) {
+      setSelectedDay(DateTime.now().setZone(selectedLawyer.timezone).startOf('day'))
+    }
+  }, [isSuperAdmin, selectedLawyer])
 
   function handleSlotClick(slot: FreeSlot) {
     setSelectedSlot(slot)
@@ -92,15 +101,22 @@ export function CalendarPage() {
 
         <Grid container spacing={3}>
           <Grid item xs={12} md={5} lg={4}>
-            <Calendar selectedDay={selectedDay} onDaySelect={setSelectedDay} />
+            <Calendar
+              selectedDay={selectedDay}
+              onDaySelect={setSelectedDay}
+              timezoneOverride={lawyerOverride?.timezone}
+              lawyerIdOverride={lawyerOverride?.id}
+            />
           </Grid>
           <Grid item xs={12} md={7} lg={8}>
-            <DayPanel
-              day={selectedDay}
-              onSlotClick={handleSlotClick}
-              onAppointmentClick={handleAppointmentClick}
-              lawyerOverride={lawyerOverride}
-            />
+            {(!isSuperAdmin || selectedLawyer) && (
+              <DayPanel
+                day={selectedDay}
+                onSlotClick={handleSlotClick}
+                onAppointmentClick={handleAppointmentClick}
+                lawyerOverride={lawyerOverride}
+              />
+            )}
           </Grid>
         </Grid>
       </Box>
@@ -109,6 +125,7 @@ export function CalendarPage() {
         open={modalOpen}
         slot={selectedSlot}
         lawyerId={isSuperAdmin ? (selectedLawyer?.id ?? undefined) : undefined}
+        lawyerTimezone={lawyerOverride?.timezone}
         onClose={() => setModalOpen(false)}
       />
 

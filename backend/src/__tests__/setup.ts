@@ -66,13 +66,14 @@ export function tokenFor(user: { id: string; email: string; role: string; timezo
 
 /**
  * Returns an ISO string for a future date.
- * @param hourUTC  UTC hour (0-23)
+ * @param hourUTC    UTC hour (0-23)
  * @param dayOffset  days from today (default: 1 = tomorrow)
+ * @param minuteUTC  UTC minute (0-59, default: 0)
  */
-export function futureISO(hourUTC: number, dayOffset = 1): string {
+export function futureISO(hourUTC: number, dayOffset = 1, minuteUTC = 0): string {
   const d = new Date()
   d.setUTCDate(d.getUTCDate() + dayOffset)
-  d.setUTCHours(hourUTC, 0, 0, 0)
+  d.setUTCHours(hourUTC, minuteUTC, 0, 0)
   return d.toISOString()
 }
 

@@ -9,15 +9,21 @@ import { useAuth } from '../contexts/AuthContext'
 interface CalendarProps {
   selectedDay: DateTime
   onDaySelect: (day: DateTime) => void
+  timezoneOverride?: string
+  lawyerIdOverride?: string
 }
 
-export function Calendar({ selectedDay, onDaySelect }: CalendarProps) {
+export function Calendar({ selectedDay, onDaySelect, timezoneOverride, lawyerIdOverride }: CalendarProps) {
   const { user } = useAuth()
-  const timezone = user?.timezone ?? 'UTC'
+  const timezone = timezoneOverride ?? user?.timezone ?? 'UTC'
 
   const [currentMonth, setCurrentMonth] = useState(() => DateTime.now().setZone(timezone))
 
-  const { data: appointments = [] } = useAppointments(currentMonth)
+  // For SUPERADMIN, don't query until a lawyer is selected (lawyerIdOverride required)
+  const isSuperAdmin = user?.role === 'SUPERADMIN'
+  const appointmentsEnabled = !isSuperAdmin || !!lawyerIdOverride
+
+  const { data: appointments = [] } = useAppointments(currentMonth, lawyerIdOverride, appointmentsEnabled)
 
   const daysWithAppointments = useMemo(() => {
     const set = new Set<string>()

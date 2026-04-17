@@ -42,6 +42,9 @@ interface CreateAppointmentModalProps {
   slot: FreeSlot | null
   onClose: () => void
   lawyerId?: string
+  // When SUPERADMIN schedules for a lawyer, pass the lawyer's timezone
+  // so the time preview label is correct. Does not affect startAt serialization.
+  lawyerTimezone?: string
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -74,9 +77,11 @@ const EMPTY_FORM: FormState = {
   notes: '',
 }
 
-export function CreateAppointmentModal({ open, slot, onClose, lawyerId }: CreateAppointmentModalProps) {
+export function CreateAppointmentModal({ open, slot, onClose, lawyerId, lawyerTimezone: lawyerTimezoneOverride }: CreateAppointmentModalProps) {
   const { user } = useAuth()
-  const lawyerTimezone = user?.timezone ?? 'UTC'
+  // Use the lawyer's timezone when provided (SUPERADMIN scheduling for someone else)
+  // falling back to the logged-in user's timezone (lawyer scheduling for themselves)
+  const lawyerTimezone = lawyerTimezoneOverride ?? user?.timezone ?? 'UTC'
 
   const [form, setForm] = useState<FormState>(EMPTY_FORM)
   const [errors, setErrors] = useState<FormErrors>({})
