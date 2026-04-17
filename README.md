@@ -4,7 +4,7 @@
 
 Sistema de gestión de citas legales entre abogados y clientes, con soporte multi-país y multi-zona horaria. Challenge técnico para Tech Lead.
 
-**App en producción:** https://lawyer-app-byeaimebye.vercel.app
+**App en producción:** [https://lawyer-app-alpha.vercel.app](https://lawyer-app-alpha.vercel.app/)
 
 ---
 
