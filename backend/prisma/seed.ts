@@ -32,7 +32,21 @@ async function main() {
     },
   })
 
-  console.log('Seed complete: 2 lawyers created')
+  await prisma.user.upsert({
+    where: { email: 'admin@fontanella.com' },
+    update: {},
+    create: {
+      email: 'admin@fontanella.com',
+      passwordHash,
+      name: 'Admin',
+      role: 'SUPERADMIN',
+      timezone: 'UTC',
+      workStartHour: 0,
+      workEndHour: 24,
+    },
+  })
+
+  console.log('Seed complete: 2 lawyers + 1 superadmin created')
 }
 
 main()
