@@ -44,14 +44,46 @@ guardan sus datos directamente acá.
 **Índice:** `(lawyerId, startAt, endAt)` — acelera la consulta de
 solapamiento y el listado por rango.
 
+## Diagrama ERD
+
+```mermaid
+erDiagram
+    User {
+        uuid    id            PK
+        string  email         "UNIQUE"
+        string  passwordHash  "bcrypt"
+        string  name
+        enum    role          "LAWYER | SUPERADMIN"
+        string  timezone      "IANA"
+        int     workStartHour "0-23"
+        int     workEndHour   "0-23"
+        datetime createdAt
+    }
+
+    Appointment {
+        uuid     id              PK
+        uuid     lawyerId        FK
+        string   clientName
+        string   clientEmail
+        string   clientTimezone  "IANA"
+        enum     type            "IN_PERSON | VIDEO | PHONE"
+        datetime startAt         "UTC"
+        datetime endAt           "UTC"
+        int      durationMinutes "30 | 60 | 120"
+        enum     status          "SCHEDULED | CANCELLED"
+        string   locationOrLink  "nullable"
+        string   notes           "nullable"
+        datetime createdAt
+    }
+
+    User ||--o{ Appointment : "tiene (solo LAWYER)"
+```
+
+> El rol `SUPERADMIN` no genera relaciones en la DB. Su acceso a citas de cualquier abogado es controlado a nivel de aplicación (ver [estrategia de autorización](./time-zone-strategy.md)).
+
 ## Relaciones
 
-```
-User (1) ──────── (N) Appointment
-       lawyerId
-```
-
-Un abogado tiene muchas citas. Una cita pertenece a un único abogado.
+Un abogado (`User` con `role=LAWYER`) tiene muchas citas. Una cita pertenece a un único abogado.
 
 ## Invariantes / reglas de negocio
 
